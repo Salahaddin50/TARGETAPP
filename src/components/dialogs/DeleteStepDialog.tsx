@@ -1,0 +1,69 @@
+import * as Dialog from '@radix-ui/react-dialog';
+import { Button } from '../ui/Button';
+import { X, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+
+interface DeleteStepDialogProps {
+  stepDescription: string;
+  onDelete: () => void;
+}
+
+export function DeleteStepDialog({ stepDescription, onDelete }: DeleteStepDialogProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleDelete = () => {
+    onDelete();
+    setOpen(false);
+  };
+
+  return (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger asChild>
+        <Button variant="ghost" size="sm">
+          <Trash2 className="h-4 w-4 text-red-500" />
+        </Button>
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+          <div className="flex justify-between items-center mb-4">
+            <Dialog.Title className="text-xl font-semibold text-red-600">
+              Delete Step
+            </Dialog.Title>
+            <Dialog.Close asChild>
+              <Button variant="ghost" size="sm">
+                <X className="h-4 w-4" />
+              </Button>
+            </Dialog.Close>
+          </div>
+          
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              Are you sure you want to delete this step? All associated tasks will be permanently removed.
+            </p>
+            <p className="text-sm text-gray-500 italic">
+              "{stepDescription}"
+            </p>
+
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleDelete}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Delete Step
+              </Button>
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
